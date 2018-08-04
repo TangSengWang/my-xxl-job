@@ -28,12 +28,17 @@
 	    <result column="glue_remark" property="glueRemark" />
 		<result column="glue_updatetime" property="glueUpdatetime" />
 
+		<result column="biz_type" property="bizType" />
+		<result column="biz_code" property="bizCode" />
+
 		<result column="child_jobid" property="childJobId" />
 	</resultMap>
 
 	<sql id="Base_Column_List">
 		t.id,
 		t.job_group,
+		t.biz_type,
+		t.biz_code,
 		t.job_cron,
 		t.job_desc,
 		t.add_time,
@@ -90,6 +95,8 @@
 	<insert id="save" parameterType="com.xxl.job.admin.core.model.XxlJobInfo" useGeneratedKeys="true" keyProperty="id" >
 		INSERT INTO XXL_JOB_QRTZ_TRIGGER_INFO (
 			job_group,
+			t.biz_type,
+			t.biz_code,
 			job_cron,
 			job_desc,
 			add_time,
@@ -109,6 +116,8 @@
 			child_jobid
 		) VALUES (
 			#{jobGroup},
+			#{bizType},
+			#{bizCode},
 			#{jobCron},
 			#{jobDesc},
 			NOW(),
@@ -139,9 +148,24 @@
 		WHERE t.id = #{id}
 	</select>
 
+	<select id="loadByBiz" parameterType="com.xxl.job.admin.core.model.XxlJobInfo" resultMap="XxlJobInfo">
+		SELECT <include refid="Base_Column_List" />
+		FROM XXL_JOB_QRTZ_TRIGGER_INFO AS t
+		<where>
+			<if test="bizType !=null">
+				t.biz_type = #{bizType}
+			</if>
+			<if test="bizCode != null and bizCode !=''">
+				AND t.biz_code = #{bizCode}
+			</if>
+		</where>
+	</select>
+
 	<update id="update" parameterType="com.xxl.job.admin.core.model.XxlJobInfo" >
 		UPDATE XXL_JOB_QRTZ_TRIGGER_INFO
 		SET
+			biz_type = #{bizType},
+			biz_code = #{bizCode},
 			job_cron = #{jobCron},
 			job_desc = #{jobDesc},
 			update_time = NOW(),

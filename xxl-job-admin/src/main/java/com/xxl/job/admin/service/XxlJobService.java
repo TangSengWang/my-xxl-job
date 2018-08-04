@@ -5,6 +5,7 @@ import com.xxl.job.admin.core.model.XxlJobInfo;
 import com.xxl.job.core.biz.model.ReturnT;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,6 +27,13 @@ public interface XxlJobService {
 	 * @return
 	 */
 	public Map<String, Object> pageList(int start, int length, int jobGroup, String jobDesc, String executorHandler, String filterTime);
+
+	/**
+	 * 通过业务属性查询job
+	 * @param jobInfo
+	 * @return
+	 */
+	public List<XxlJobInfo> getJobInfoByBiz(XxlJobInfo jobInfo);
 
 	/**
 	 * add job

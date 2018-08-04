@@ -38,6 +38,10 @@ public class XxlJobInfo {
 	// copy from quartz
 	private String jobStatus;		// 任务状态 【base on quartz】
 
+	private String appName;//执行器appname
+
+	private Integer bizType;
+	private String  bizCode;
 
 	public int getId() {
 		return id;
@@ -199,4 +203,28 @@ public class XxlJobInfo {
 		this.jobStatus = jobStatus;
 	}
 
+	public String getAppName() {
+		return appName;
+	}
+
+	public void setAppName(String appName) {
+
+		this.appName = appName;
+	}
+
+	public Integer getBizType() {
+		return bizType;
+	}
+
+	public void setBizType(Integer bizType) {
+		this.bizType = bizType;
+	}
+
+	public String getBizCode() {
+		return bizCode;
+	}
+
+	public void setBizCode(String bizCode) {
+		this.bizCode = bizCode;
+	}
 }

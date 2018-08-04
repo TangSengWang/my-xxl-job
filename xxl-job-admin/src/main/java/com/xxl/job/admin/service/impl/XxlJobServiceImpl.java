@@ -69,15 +69,31 @@ public class XxlJobServiceImpl implements XxlJobService {
 	}
 
 	@Override
+	public List<XxlJobInfo> getJobInfoByBiz(XxlJobInfo jobInfo) {
+		// page list
+		return xxlJobInfoDao.loadByBiz(jobInfo);
+	}
+
+	@Override
 	public ReturnT<String> add(XxlJobInfo jobInfo) {
 		// valid
-		XxlJobGroup group = xxlJobGroupDao.load(jobInfo.getJobGroup());
+//		XxlJobGroup group = xxlJobGroupDao.load(jobInfo.getJobGroup());
+		//改用appname正序取第一个执行器
+		XxlJobGroup group =xxlJobGroupDao.loadByAppName(jobInfo.getAppName());
 		if (group == null) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_choose")+I18nUtil.getString("jobinfo_field_jobgroup")) );
 		}
 		if (!CronExpression.isValidExpression(jobInfo.getJobCron())) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString("jobinfo_field_cron_unvalid") );
 		}
+		//新增
+		if (jobInfo.getBizType()==null) {
+			return new ReturnT<String>(ReturnT.FAIL_CODE, "biz_type unvalid");
+		}
+		if (StringUtils.isBlank(jobInfo.getBizCode())) {
+			return new ReturnT<String>(ReturnT.FAIL_CODE, "biz_code unvalid");
+		}
+		//新增
 		if (StringUtils.isBlank(jobInfo.getJobDesc())) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input")+I18nUtil.getString("jobinfo_field_jobdesc")) );
 		}

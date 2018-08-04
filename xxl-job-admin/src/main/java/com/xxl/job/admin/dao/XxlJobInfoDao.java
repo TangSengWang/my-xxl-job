@@ -26,7 +26,9 @@ public interface XxlJobInfoDao {
 	public int save(XxlJobInfo info);
 
 	public XxlJobInfo loadById(@Param("id") int id);
-	
+
+	public List<XxlJobInfo> loadByBiz(XxlJobInfo item);
+
 	public int update(XxlJobInfo item);
 	
 	public int delete(@Param("id") int id);
