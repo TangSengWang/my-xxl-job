@@ -60,6 +60,14 @@ public interface XxlJobService {
 	public ReturnT<String> remove(int id);
 
 	/**
+	 * remove job
+	 *
+	 * @param id
+	 * @return
+	 */
+	public ReturnT<String> removeByBiz(XxlJobInfo jobInfo);
+
+	/**
 	 * pause job
 	 *
 	 * @param id

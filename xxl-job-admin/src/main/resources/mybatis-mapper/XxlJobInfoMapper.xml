@@ -95,8 +95,8 @@
 	<insert id="save" parameterType="com.xxl.job.admin.core.model.XxlJobInfo" useGeneratedKeys="true" keyProperty="id" >
 		INSERT INTO XXL_JOB_QRTZ_TRIGGER_INFO (
 			job_group,
-			t.biz_type,
-			t.biz_code,
+			biz_type,
+			biz_code,
 			job_cron,
 			job_desc,
 			add_time,

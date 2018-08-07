@@ -152,6 +152,8 @@ CREATE TABLE XXL_JOB_QRTZ_LOCKS
 CREATE TABLE `XXL_JOB_QRTZ_TRIGGER_INFO` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `job_group` int(11) NOT NULL COMMENT '执行器主键ID',
+  `biz_type` int(1) DEFAULT NULL COMMENT '业务类型，对应模块的编号',
+  `biz_code` varchar(512) DEFAULT NULL COMMENT '业务编号',
   `job_cron` varchar(128) NOT NULL COMMENT '任务执行CRON',
   `job_desc` varchar(255) NOT NULL,
   `add_time` datetime DEFAULT NULL,
@@ -163,14 +165,15 @@ CREATE TABLE `XXL_JOB_QRTZ_TRIGGER_INFO` (
   `executor_param` varchar(512) DEFAULT NULL COMMENT '执行器任务参数',
   `executor_block_strategy` varchar(50) DEFAULT NULL COMMENT '阻塞处理策略',
   `executor_fail_strategy` varchar(50) DEFAULT NULL COMMENT '失败处理策略',
-  `executor_timeout` int(11) NOT NULL DEFAULT 0 COMMENT '任务执行超时时间，单位秒',
+  `executor_timeout` int(11) NOT NULL DEFAULT '0' COMMENT '任务执行超时时间，单位秒',
   `glue_type` varchar(50) NOT NULL COMMENT 'GLUE类型',
   `glue_source` text COMMENT 'GLUE源代码',
   `glue_remark` varchar(128) DEFAULT NULL COMMENT 'GLUE备注',
   `glue_updatetime` datetime DEFAULT NULL COMMENT 'GLUE更新时间',
   `child_jobid` varchar(255) DEFAULT NULL COMMENT '子任务ID，多个逗号分隔',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+
 
 CREATE TABLE `XXL_JOB_QRTZ_TRIGGER_LOG` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

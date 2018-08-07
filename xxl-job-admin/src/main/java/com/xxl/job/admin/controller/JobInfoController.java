@@ -82,6 +82,12 @@ public class JobInfoController {
 	public ReturnT<String> remove(int id) {
 		return xxlJobService.remove(id);
 	}
+
+	@RequestMapping("/removeByBiz")
+	@ResponseBody
+	public ReturnT<String> removeByBiz(XxlJobInfo jobInfo) {
+		return xxlJobService.removeByBiz(jobInfo);
+	}
 	
 	@RequestMapping("/pause")
 	@ResponseBody

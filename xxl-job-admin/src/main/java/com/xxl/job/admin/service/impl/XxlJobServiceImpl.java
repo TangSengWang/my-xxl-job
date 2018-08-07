@@ -75,25 +75,33 @@ public class XxlJobServiceImpl implements XxlJobService {
 	}
 
 	@Override
-	public ReturnT<String> add(XxlJobInfo jobInfo) {
-		// valid
-//		XxlJobGroup group = xxlJobGroupDao.load(jobInfo.getJobGroup());
-		//改用appname正序取第一个执行器
-		XxlJobGroup group =xxlJobGroupDao.loadByAppName(jobInfo.getAppName());
+	public ReturnT<String> add(XxlJobInfo jobInfo){
+		XxlJobGroup group;
+		if(!StringUtils.isBlank(jobInfo.getAppName())){
+			group = xxlJobGroupDao.loadByAppName(jobInfo.getAppName());
+			jobInfo.setJobGroup(group.getId());
+
+			//新增
+			if (jobInfo.getBizType()==null) {
+				return new ReturnT<String>(ReturnT.FAIL_CODE, "biz_type unvalid");
+			}
+			if (StringUtils.isBlank(jobInfo.getBizCode())) {
+				return new ReturnT<String>(ReturnT.FAIL_CODE, "biz_code unvalid");
+			}
+			//新增
+		}else{
+			group = xxlJobGroupDao.load(jobInfo.getJobGroup());
+		}
+		return add(jobInfo,group);
+	}
+	public ReturnT<String> add(XxlJobInfo jobInfo,XxlJobGroup group) {
 		if (group == null) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_choose")+I18nUtil.getString("jobinfo_field_jobgroup")) );
 		}
 		if (!CronExpression.isValidExpression(jobInfo.getJobCron())) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, I18nUtil.getString("jobinfo_field_cron_unvalid") );
 		}
-		//新增
-		if (jobInfo.getBizType()==null) {
-			return new ReturnT<String>(ReturnT.FAIL_CODE, "biz_type unvalid");
-		}
-		if (StringUtils.isBlank(jobInfo.getBizCode())) {
-			return new ReturnT<String>(ReturnT.FAIL_CODE, "biz_code unvalid");
-		}
-		//新增
+
 		if (StringUtils.isBlank(jobInfo.getJobDesc())) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input")+I18nUtil.getString("jobinfo_field_jobdesc")) );
 		}
@@ -247,6 +255,29 @@ public class XxlJobServiceImpl implements XxlJobService {
 		XxlJobInfo xxlJobInfo = xxlJobInfoDao.loadById(id);
         String group = String.valueOf(xxlJobInfo.getJobGroup());
         String name = String.valueOf(xxlJobInfo.getId());
+
+		try {
+			XxlJobDynamicScheduler.removeJob(name, group);
+			xxlJobInfoDao.delete(id);
+			xxlJobLogDao.delete(id);
+			xxlJobLogGlueDao.deleteByJobId(id);
+			return ReturnT.SUCCESS;
+		} catch (SchedulerException e) {
+			logger.error(e.getMessage(), e);
+		}
+		return ReturnT.FAIL;
+	}
+
+	@Override
+	public ReturnT<String> removeByBiz(XxlJobInfo jobInfo) {
+		List<XxlJobInfo> xxlJobInfoList = xxlJobInfoDao.loadByBiz(jobInfo);
+		XxlJobInfo xxlJobInfo = new XxlJobInfo();
+		if(!CollectionUtils.isEmpty(xxlJobInfoList)){
+			xxlJobInfo = xxlJobInfoList.get(0);
+		}
+		int id = xxlJobInfo.getId();
+		String group = String.valueOf(xxlJobInfo.getJobGroup());
+		String name = String.valueOf(xxlJobInfo.getId());
 
 		try {
 			XxlJobDynamicScheduler.removeJob(name, group);
